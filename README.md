@@ -178,6 +178,26 @@ SELECT * FROM booking_july WHERE payment_method = 'UPI';
 CREATE VIEW AVG_Cust_Rating AS
 SELECT Vehicle_Type, AVG(Customer_Rating) AS avg_customer_rating
 FROM booking_july GROUP BY Vehicle_Type;
+## 🚀 Future Scope
+- Implement machine learning models to predict ride cancellations.
+- Build a time-based demand forecasting model for peak hour identification.
+- Add geospatial heatmaps for pickup and drop-off hotspots.
+- Automate daily data refresh using Power BI Gateway.
+- Integrate real-time driver performance scoring.
+
+---
+
+## 👤 Author  
+**Name:** KUSH PRAJAPATI  
+**Email:** kushprajapatimain@gmail.com  
+**GitHub:** https://github.com/kushprajapatimain  
+**LinkedIn:** https://www.linkedin.com/in/kush-prajapati-03334937a/  
+**Repository:** https://github.com/kushprajapatimain/ola-ride-analysis-dashboard/tree/main
+
+---
+
+## ⭐ If you like this project, don't forget to star the repository!
+
 
 -- 9. Revenue from successful rides
 CREATE VIEW total_successful_ride_value AS
