@@ -13,7 +13,7 @@ The analysis helps identify factors affecting customer experience and areas for 
 ## 📁 Dataset Details  
 - **Rows:** 103,024  
 - **Columns:** 20  
-- **File:** `booking-july.csv`  
+- **File:** `booking-july.csv` (uploaded in repo)  
 - **Source:** Synthetic dataset generated based on Ola ride patterns  
 
 ### **Important Columns**
@@ -25,12 +25,11 @@ The analysis helps identify factors affecting customer experience and areas for 
 `Driver_Ratings`, `Customer_Rating`
 
 ### **Data Cleaning Steps**
-- Handled missing/null values in VTAT, CTAT, ratings  
-- Standardized booking status text  
-- Cleaned inconsistent payment method entries  
-- Removed zero-distance values for successful rides  
-- Fixed duplicate Booking_IDs  
-- Normalized vehicle types and cancellation reason fields  
+- Handled missing/null values in V_TAT, C_TAT, and rating fields  
+- Standardized booking status text and cancellation reason labels  
+- Cleaned inconsistent payment method entries and normalized values  
+- Removed zero-distance entries for successful rides where applicable  
+- Fixed duplicate Booking_IDs and normalized vehicle type names
 
 ---
 
@@ -45,10 +44,10 @@ The analysis helps identify factors affecting customer experience and areas for 
 ## 🔄 Workflow  
 1. Cleaned and preprocessed raw data using Excel  
 2. Imported the cleaned data into MySQL  
-3. Created analytic SQL views for KPIs  
-4. Imported SQL data into Power BI  
+3. Created analytic SQL views for KPIs and metrics  
+4. Imported SQL output into Power BI for visualization  
 5. Designed dashboards for Overview, Vehicle Performance, Revenue, Cancellations & Ratings  
-6. Used DAX for measures like cancellation percentage, total revenue, ratings distribution  
+6. Used DAX for measures like cancellation percentage, total revenue, avg distance, ratings distribution  
 
 ---
 
@@ -59,7 +58,7 @@ The analysis helps identify factors affecting customer experience and areas for 
 - **Success Rate:** 62.09%  
 - **Driver cancellations:** 17.89%  
 - **Customer cancellations:** 10.19%  
-➡️ *Driver-side cancellations are significantly higher.*
+➡️ *Driver-side cancellations are significantly higher than customer cancellations.*
 
 ---
 
@@ -78,16 +77,16 @@ The analysis helps identify factors affecting customer experience and areas for 
 3. Customer coughing/sick – **19.82%**  
 4. More than permitted people – **15.32%**
 
-➡️ *Driver behaviour + customer miscommunication = key cancellation triggers.*
+➡️ *Driver behaviour and customer miscommunication are major cancellation drivers.*
 
 ---
 
 ### **4. Revenue Insights**
-- **Total Revenue:** ₹35 Million+  
-- **Cash Payments:** Highest (₹20M)  
-- **UPI Payments:** Second highest (~₹14M)  
-- Card payments extremely low  
-➡️ *Cash remains the dominant payment method.*
+- **Total Revenue (approx):** ₹35 Million+  
+- **Cash Payments:** Highest contributor (~₹20M)  
+- **UPI Payments:** Second (~₹14M)  
+- Card payments and other methods: Minor share  
+➡️ *Cash remains a dominant payment method in this dataset.*
 
 ---
 
@@ -103,22 +102,22 @@ The analysis helps identify factors affecting customer experience and areas for 
 | Auto | **10.04 km (lowest)** | 92K km | ₹8.09M |
 | Mini | 24.98 km | 226K km | ₹7.99M |
 
-➡️ *E-Bike & Prime Plus have longest trips; Autos cover short trips.*
+➡️ *E-Bike & Prime Plus show longest average trips; Autos are short-distance rides.*
 
 ---
 
 ### **6. Ratings Insights**
-- Driver ratings ≈ **4.0** across categories  
-- Customer ratings ≈ **4.0** too  
-➡️ *Ratings stable across all vehicle types.*
+- Driver ratings ≈ **4.0** across vehicle types  
+- Customer ratings ≈ **4.0** as well  
+➡️ *Ratings are stable and centered around 4.0.*
 
 ---
 
 ### **7. Demand Insights**
-- Daily ride volume: **3100–3400 rides/day**  
-- Weekend demand spikes  
-- End-of-month demand increases  
-➡️ *Predictable increase in weekend usage.*
+- Daily ride volume: **~3,100–3,400 rides/day**  
+- Noticeable weekend demand spikes  
+- End-of-month uplift in ride volume  
+➡️ *Weekend and end-of-month are clear high-demand periods.*
 
 ---
 
@@ -129,13 +128,13 @@ The analysis helps identify factors affecting customer experience and areas for 
 - Cancellations Analysis  
 - Ratings Comparison  
 
-(Add screenshots in a folder like `/images/` in your repo.)
+(Place dashboard screenshots under `/images/` in the repo for visual reference.)
 
 ---
 
 ## 🧮 SQL Queries Used
 
-```sql
+````sql
 CREATE DATABASE ola;
 USE ola;
 
@@ -178,6 +177,18 @@ SELECT * FROM booking_july WHERE payment_method = 'UPI';
 CREATE VIEW AVG_Cust_Rating AS
 SELECT Vehicle_Type, AVG(Customer_Rating) AS avg_customer_rating
 FROM booking_july GROUP BY Vehicle_Type;
+
+-- 9. Revenue from successful rides
+CREATE VIEW total_successful_ride_value AS
+SELECT SUM(Booking_Value) AS total_successful_ride_value
+FROM booking_july WHERE Booking_Status = 'Success';
+
+-- 10. Incomplete rides & reasons
+CREATE VIEW Incomplete_Rides_Reason AS
+SELECT Booking_ID, Incomplete_Rides_Reason
+FROM booking_july WHERE Incomplete_Rides = 'Yes';
+````
+
 ## 🚀 Future Scope
 - Implement machine learning models to predict ride cancellations.
 - Build a time-based demand forecasting model for peak hour identification.
@@ -194,17 +205,8 @@ FROM booking_july GROUP BY Vehicle_Type;
 **LinkedIn:** https://www.linkedin.com/in/kush-prajapati-03334937a/  
 **Repository:** https://github.com/kushprajapatimain/ola-ride-analysis-dashboard/tree/main
 
+
 ---
 
 ## ⭐ If you like this project, don't forget to star the repository!
 
-
--- 9. Revenue from successful rides
-CREATE VIEW total_successful_ride_value AS
-SELECT SUM(Booking_Value) AS total_successful_ride_value
-FROM booking_july WHERE Booking_Status = 'Success';
-
--- 10. Incomplete rides & reasons
-CREATE VIEW Incomplete_Rides_Reason AS
-SELECT Booking_ID, Incomplete_Rides_Reason
-FROM booking_july WHERE Incomplete_Rides = 'Yes';
