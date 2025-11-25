@@ -1,1 +1,190 @@
-# ola-ride-analysis-dashboard
+# 📊 Ola Ride Analysis Dashboard – 2024  
+Analyzed 1 lakh Ola ride bookings to uncover demand trends, cancellation patterns, and revenue insights using Excel, SQL, and Power BI.
+
+---
+
+## 📝 Overview  
+This project analyzes one month of Ola ride data containing **103,024 bookings** to understand operational patterns, user behavior, and overall platform performance.  
+Using **Excel** for data cleaning, **SQL** for analytical queries, and **Power BI** for interactive visualization, this project highlights demand trends, cancellation reasons, revenue distribution, ratings, and vehicle performance insights.  
+The analysis helps identify factors affecting customer experience and areas for operational improvement.
+
+---
+
+## 📁 Dataset Details  
+- **Rows:** 103,024  
+- **Columns:** 20  
+- **File:** `booking-july.csv`  
+- **Source:** Synthetic dataset generated based on Ola ride patterns  
+
+### **Important Columns**
+`Date`, `Time`, `Booking_ID`, `Booking_Status`, `Customer_ID`, `Vehicle_Type`,  
+`Pickup_Location`, `Drop_Location`, `V_TAT`, `C_TAT`,  
+`Cancelled_Rides_by_Customer`, `Cancelled_Rides_by_Driver`,  
+`Incomplete_Rides`, `Incomplete_Rides_Reason`,  
+`Booking_Value`, `Payment_Method`, `Ride_Distance`,  
+`Driver_Ratings`, `Customer_Rating`
+
+### **Data Cleaning Steps**
+- Handled missing/null values in VTAT, CTAT, ratings  
+- Standardized booking status text  
+- Cleaned inconsistent payment method entries  
+- Removed zero-distance values for successful rides  
+- Fixed duplicate Booking_IDs  
+- Normalized vehicle types and cancellation reason fields  
+
+---
+
+## 🛠️ Tools & Technologies Used  
+- **Excel** – Cleaning & preprocessing  
+- **MySQL** – Analytical queries & KPIs  
+- **Power BI** – Dashboard creation & visuals  
+- **DAX** – Calculations & measures  
+
+---
+
+## 🔄 Workflow  
+1. Cleaned and preprocessed raw data using Excel  
+2. Imported the cleaned data into MySQL  
+3. Created analytic SQL views for KPIs  
+4. Imported SQL data into Power BI  
+5. Designed dashboards for Overview, Vehicle Performance, Revenue, Cancellations & Ratings  
+6. Used DAX for measures like cancellation percentage, total revenue, ratings distribution  
+
+---
+
+## 📈 Key Insights  
+
+### **1. Booking Status Insights**
+- **Total Bookings:** 103K  
+- **Success Rate:** 62.09%  
+- **Driver cancellations:** 17.89%  
+- **Customer cancellations:** 10.19%  
+➡️ *Driver-side cancellations are significantly higher.*
+
+---
+
+### **2. Customer Cancellation Reasons**
+1. Driver not moving – **30.24%**  
+2. Driver asked to cancel – **25.43%**  
+3. Change of plans – **19.82%**  
+4. AC not working – **14.93%**  
+5. Wrong address – **9.57%**
+
+---
+
+### **3. Driver Cancellation Reasons**
+1. Personal/car issues – **35.49%**  
+2. Customer-related issues – **29.36%**  
+3. Customer coughing/sick – **19.82%**  
+4. More than permitted people – **15.32%**
+
+➡️ *Driver behaviour + customer miscommunication = key cancellation triggers.*
+
+---
+
+### **4. Revenue Insights**
+- **Total Revenue:** ₹35 Million+  
+- **Cash Payments:** Highest (₹20M)  
+- **UPI Payments:** Second highest (~₹14M)  
+- Card payments extremely low  
+➡️ *Cash remains the dominant payment method.*
+
+---
+
+### **5. Vehicle Type Insights**
+
+| Vehicle Type | Avg Distance | Total Distance | Revenue |
+|--------------|--------------|----------------|---------|
+| Prime Sedan | 25.01 km | 235K km | ₹8.3M |
+| Prime Plus | 25.03 km | 227K km | ₹8.05M |
+| Prime SUV | 24.88 km | 224K km | ₹7.93M |
+| Bike | 24.93 km | 228K km | ₹7.99M |
+| E-Bike | **25.15 km (highest)** | 231K km | ₹8.18M |
+| Auto | **10.04 km (lowest)** | 92K km | ₹8.09M |
+| Mini | 24.98 km | 226K km | ₹7.99M |
+
+➡️ *E-Bike & Prime Plus have longest trips; Autos cover short trips.*
+
+---
+
+### **6. Ratings Insights**
+- Driver ratings ≈ **4.0** across categories  
+- Customer ratings ≈ **4.0** too  
+➡️ *Ratings stable across all vehicle types.*
+
+---
+
+### **7. Demand Insights**
+- Daily ride volume: **3100–3400 rides/day**  
+- Weekend demand spikes  
+- End-of-month demand increases  
+➡️ *Predictable increase in weekend usage.*
+
+---
+
+## 📊 Power BI Dashboard Pages  
+- Overview  
+- Vehicle Performance  
+- Revenue Analysis  
+- Cancellations Analysis  
+- Ratings Comparison  
+
+(Add screenshots in a folder like `/images/` in your repo.)
+
+---
+
+## 🧮 SQL Queries Used
+
+```sql
+CREATE DATABASE ola;
+USE ola;
+
+-- 1. Retrieve all successful bookings
+CREATE VIEW successful_booking AS
+SELECT * FROM booking_july WHERE Booking_status = 'success';
+
+-- 2. Avg ride distance per vehicle
+CREATE VIEW ride_distance_for_each_vehicle AS
+SELECT vehicle_type, AVG(ride_distance) AS avg_distance
+FROM booking_july GROUP BY vehicle_type;
+
+-- 3. Total customer cancellations
+CREATE VIEW cancelled_rides_by_customers AS
+SELECT COUNT(*) FROM booking_july
+WHERE Booking_Status = 'canceled by Customer';
+
+-- 4. Top 5 customers
+CREATE VIEW Top_5_Customers AS
+SELECT Customer_ID, COUNT(Booking_ID) AS total_rides
+FROM booking_july GROUP BY Customer_ID
+ORDER BY total_rides DESC LIMIT 5;
+
+-- 5. Driver cancellation (personal/car issues)
+CREATE VIEW Rides_cancelled_by_Drivers_P_C_Issues AS
+SELECT COUNT(*) FROM booking_july
+WHERE canceled_Rides_by_Driver = 'Personal & Car related issue';
+
+-- 6. Max/Min ratings for Prime Sedan
+CREATE VIEW Max_Min_Driver_Rating AS
+SELECT MAX(Driver_Ratings) AS max_rating,
+MIN(Driver_Ratings) AS min_rating
+FROM booking_july WHERE Vehicle_Type = 'Prime Sedan';
+
+-- 7. UPI payments
+CREATE VIEW UPI_PAYMENT AS
+SELECT * FROM booking_july WHERE payment_method = 'UPI';
+
+-- 8. Avg customer rating per vehicle
+CREATE VIEW AVG_Cust_Rating AS
+SELECT Vehicle_Type, AVG(Customer_Rating) AS avg_customer_rating
+FROM booking_july GROUP BY Vehicle_Type;
+
+-- 9. Revenue from successful rides
+CREATE VIEW total_successful_ride_value AS
+SELECT SUM(Booking_Value) AS total_successful_ride_value
+FROM booking_july WHERE Booking_Status = 'Success';
+
+-- 10. Incomplete rides & reasons
+CREATE VIEW Incomplete_Rides_Reason AS
+SELECT Booking_ID, Incomplete_Rides_Reason
+FROM booking_july WHERE Incomplete_Rides = 'Yes';
