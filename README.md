@@ -15,12 +15,28 @@ Using **Excel** for data cleaning, **SQL** for analytical queries, and **Power B
 - **File:** `booking-july.csv`  
 - **Source:** Synthetic Ola dataset  
 
+### 📥 Download Raw Dataset  
+➡️ **Raw CSV Data:**  
+https://raw.githubusercontent.com/kushprajapatimain/ola-ride-analysis-dashboard/main/booking-july.csv
+
+---
+
 ### **Data Cleaning Steps**
 - Removed nulls in VTAT/CTAT/ratings  
 - Standardized booking status  
 - Cleaned payment methods  
 - Removed invalid 0-distance successful rides  
 - Normalized vehicle types  
+
+---
+
+## 📁 Project Files
+
+### 🔹 Power BI Dashboard File (.pbit)
+Download/open the full interactive Power BI template:
+
+➡️ **Ola End-to-End Dashboard (.pbit)**  
+https://raw.githubusercontent.com/kushprajapatimain/ola-ride-analysis-dashboard/main/ola%20end%20to%20end%20project.pbit
 
 ---
 
@@ -49,23 +65,23 @@ Using **Excel** for data cleaning, **SQL** for analytical queries, and **Power B
 - **10.19%** customer cancellations  
 
 ### **Customer Cancellation Reasons**
-- Driver not moving – **30.24%**  
-- Driver asked to cancel – **25.43%**  
-- Change of plans – **19.82%**  
-- AC not working – **14.93%**  
-- Wrong address – **9.57%**
+- Driver not moving: **30.24%**  
+- Driver asked to cancel: **25.43%**  
+- Change of plans: **19.82%**  
+- AC not working: **14.93%**  
+- Wrong address: **9.57%**
 
 ### **Driver Cancellation Reasons**
-- Personal/car issues – **35.49%**  
-- Customer-related issue – **29.36%**  
-- Customer coughing/sick – **19.82%**  
-- More than permitted – **15.32%**
+- Personal/car issues: **35.49%**  
+- Customer-related issue: **29.36%**  
+- Customer coughing/sick: **19.82%**  
+- More than permitted: **15.32%**
 
 ### **Revenue**
 - **₹35M+** total booking value  
-- Cash ~₹20M  
-- UPI ~₹14M  
-- Cards very low usage  
+- Cash: ~₹20M  
+- UPI: ~₹14M  
+- Cards: very low usage  
 
 ---
 
@@ -152,6 +168,7 @@ FROM booking_july WHERE Booking_Status = 'Success';
 CREATE VIEW Incomplete_Rides_Reason AS
 SELECT Booking_ID, Incomplete_Rides_Reason
 FROM booking_july WHERE Incomplete_Rides = 'Yes';
+
 
 ````
 
